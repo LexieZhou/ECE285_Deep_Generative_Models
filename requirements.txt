@@ -5,4 +5,3 @@ scipy
 matplotlib
 tqdm
 kaggle
-{"username":"lexieee02","key":"KGAT_864866c1b32a7f711123055b511db883"}
