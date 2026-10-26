@@ -1,0 +1,8 @@
+torch>=2.0
+torchvision>=0.15
+pytorch-ignite>=0.4.11
+scipy
+matplotlib
+tqdm
+kaggle
+{"username":"lexieee02","key":"KGAT_864866c1b32a7f711123055b511db883"}
