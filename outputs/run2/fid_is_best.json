@@ -2,12 +2,12 @@
   "ckpt": "outputs/run2/best.pt",
   "epoch": 93,
   "fid": {
-    "vae_vs_train_n5216": 0.11712122471971792,
-    "vae_vs_train_n624": 0.11690720701457183,
-    "test_vs_train_n624 (real baseline)": 0.008884451406472482
+    "vae_vs_train_n5216": 247.71575292420664,
+    "vae_vs_train_n624": 259.7969040952164,
+    "test_vs_train_n624 (real baseline)": 25.99430546709567
   },
   "is": {
-    "vae_n5216": 1.7639012677843457,
+    "vae_n5216": 1.7639005153957033,
     "train_n5216 (real)": 2.273658264073686,
     "test_n624 (real)": 2.280189713150617
   }
