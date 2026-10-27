@@ -2,6 +2,7 @@ import argparse
 import csv
 import json
 import os
+import sys
 
 import matplotlib
 matplotlib.use("Agg")  # no display on the server
@@ -54,6 +55,20 @@ def run_epoch(model, loader, device, beta, optimizer=None):
     return {k: v / n for k, v in totals.items()}
 
 
+class Tee:
+    """Writes to several streams at once, so console output also lands in a log file."""
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, data):
+        for s in self.streams:
+            s.write(data)
+
+    def flush(self):
+        for s in self.streams:
+            s.flush()
+
+
 def plot_history(history, path):
     epochs = [h["epoch"] for h in history]
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
@@ -75,6 +90,9 @@ def main():
     os.makedirs(os.path.join(args.out_dir, "samples"), exist_ok=True)
     with open(os.path.join(args.out_dir, "config.json"), "w") as f:
         json.dump(vars(args), f, indent=2)
+    log_file = open(os.path.join(args.out_dir, "train.log"), "w", buffering=1)
+    sys.stdout = Tee(sys.__stdout__, log_file)
+    sys.stderr = Tee(sys.__stderr__, log_file)  # keep tracebacks in the log too
     print(f"device: {device}")
 
     train_loader = get_dataloader(args.data_root, "train", args.img_size, args.batch_size, True, args.num_workers)
