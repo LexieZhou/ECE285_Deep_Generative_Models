@@ -42,7 +42,8 @@ class VAE(nn.Module):
 
     def encode(self, x):
         h = self.encoder(x).flatten(1)
-        return self.fc_mu(h), self.fc_logvar(h)
+        # Clamp so exp(logvar) can't blow up the KL term (run1 diverged at epoch 22-23)
+        return self.fc_mu(h), self.fc_logvar(h).clamp(-10.0, 10.0)
 
     def reparameterize(self, mu, logvar):
         # z = mu + sigma * eps, eps ~ N(0, I)
