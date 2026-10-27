@@ -1,0 +1,14 @@
+{
+  "ckpt": "outputs/beta_0.1/best.pt",
+  "epoch": 93,
+  "fid": {
+    "vae_vs_train_n5216": 0.12777879343301246,
+    "vae_vs_train_n624": 0.12887512685380698,
+    "test_vs_train_n624 (real baseline)": 0.008884451406472482
+  },
+  "is": {
+    "vae_n5216": 2.0708792056306544,
+    "train_n5216 (real)": 2.273658264073686,
+    "test_n624 (real)": 2.280189713150617
+  }
+}
