@@ -41,9 +41,15 @@ def to_inception_input(x):
 
 
 @torch.no_grad()
-def inception_probs(inception, batches, device):
-    """Runs ignite's default Inception feature extractor (1000-way softmax) over an iterable of image batches."""
-    return torch.cat([inception(to_inception_input(x.to(device))).cpu() for x in batches])
+def inception_outputs(feature_model, prob_model, batches, device):
+    """Runs both of ignite's default Inception extractors over an iterable of image batches:
+    2048-d pool features (FID's default) and the 1000-way softmax (InceptionScore's default)."""
+    feats, probs = [], []
+    for x in batches:
+        x = to_inception_input(x.to(device))
+        feats.append(feature_model(x).cpu())
+        probs.append(prob_model(x).cpu())
+    return torch.cat(feats), torch.cat(probs)
 
 
 @torch.no_grad()
@@ -54,7 +60,7 @@ def generate(model, n, batch_size, device):
 
 
 def fid(a, b, batch_size, device):
-    """ignite FID between two equal-sized sets of precomputed Inception outputs."""
+    """ignite FID between two equal-sized sets of precomputed Inception pool features."""
     assert len(a) == len(b), "ignite's FID needs the same number of samples on both sides"
     metric = FID(num_features=a.shape[1], feature_extractor=torch.nn.Identity(), device=device)
     for i in range(0, len(a), batch_size):
@@ -85,24 +91,27 @@ def main():
     n_train, n_test = len(train_loader.dataset), len(test_loader.dataset)
     n_fake = args.n_fake or n_train
 
-    inception = InceptionModel(return_features=False, device=device)
+    # Same extractors as ignite's FID() / InceptionScore() defaults (and the blog):
+    # FID on 2048-d pool features, IS on the 1000-way softmax
+    feature_model = InceptionModel(return_features=True, device=device)
+    prob_model = InceptionModel(return_features=False, device=device)
     print(f"device: {device} | train {n_train}, test {n_test}, generated {n_fake}")
-    train_p = inception_probs(inception, (x for x, _ in train_loader), device)
-    test_p = inception_probs(inception, (x for x, _ in test_loader), device)
-    fake_p = inception_probs(inception, generate(model, n_fake, args.batch_size, device), device)
+    train_f, train_p = inception_outputs(feature_model, prob_model, (x for x, _ in train_loader), device)
+    test_f, test_p = inception_outputs(feature_model, prob_model, (x for x, _ in test_loader), device)
+    fake_f, fake_p = inception_outputs(feature_model, prob_model, generate(model, n_fake, args.batch_size, device), device)
 
     # FID is biased upward for small N, so compare everything at matched sizes:
     # the full-size score, and a size-n_test score next to the real test-vs-train baseline.
     g = torch.Generator().manual_seed(args.seed)
-    train_sub = train_p[torch.randperm(n_train, generator=g)[:n_test]]
+    train_sub = train_f[torch.randperm(n_train, generator=g)[:n_test]]
     n_big = min(n_fake, n_train)
     results = {
         "ckpt": args.ckpt,
         "epoch": ckpt["epoch"],
         "fid": {
-            f"vae_vs_train_n{n_big}": fid(fake_p[:n_big], train_p[:n_big], args.batch_size, device),
-            f"vae_vs_train_n{n_test}": fid(fake_p[:n_test], train_sub, args.batch_size, device),
-            f"test_vs_train_n{n_test} (real baseline)": fid(test_p, train_sub, args.batch_size, device),
+            f"vae_vs_train_n{n_big}": fid(fake_f[:n_big], train_f[:n_big], args.batch_size, device),
+            f"vae_vs_train_n{n_test}": fid(fake_f[:n_test], train_sub, args.batch_size, device),
+            f"test_vs_train_n{n_test} (real baseline)": fid(test_f, train_sub, args.batch_size, device),
         },
         "is": {
             f"vae_n{n_fake}": inception_score(fake_p, args.batch_size, device),
