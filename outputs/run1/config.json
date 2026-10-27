@@ -1,0 +1,14 @@
+{
+  "data_root": "data/chest_xray",
+  "out_dir": "outputs/run1",
+  "img_size": 128,
+  "latent_dim": 128,
+  "base_channels": 32,
+  "batch_size": 64,
+  "epochs": 100,
+  "lr": 0.001,
+  "beta": 1.0,
+  "num_workers": 4,
+  "sample_every": 10,
+  "seed": 0
+}
