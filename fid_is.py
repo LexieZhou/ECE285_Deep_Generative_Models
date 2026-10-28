@@ -22,7 +22,8 @@ def parse_args():
     p.add_argument("--n_fake", type=int, default=None, help="number of generated images; default = size of train split")
     p.add_argument("--batch_size", type=int, default=64)
     p.add_argument("--num_workers", type=int, default=4)
-    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4],
+                   help="one sampling run per seed; scores are reported as mean and std over seeds")
     return p.parse_args()
 
 
@@ -75,9 +76,14 @@ def inception_score(probs, batch_size, device):
     return metric.compute()
 
 
+def mean_std(values):
+    """Mean and sample std (0 for a single value) of a list of floats."""
+    t = torch.tensor(values, dtype=torch.float64)
+    return t.mean().item(), (t.std().item() if len(values) > 1 else 0.0)
+
+
 def main():
     args = parse_args()
-    torch.manual_seed(args.seed)
     device = get_device()
     ckpt = torch.load(args.ckpt, map_location=device)
     targs = ckpt["args"]
@@ -95,41 +101,60 @@ def main():
     # FID on 2048-d pool features, IS on the 1000-way softmax
     feature_model = InceptionModel(return_features=True, device=device)
     prob_model = InceptionModel(return_features=False, device=device)
-    print(f"device: {device} | train {n_train}, test {n_test}, generated {n_fake}")
+    print(f"device: {device} | train {n_train}, test {n_test}, generated {n_fake} x {len(args.seeds)} seeds")
+    # Real features don't depend on the seed, so they are extracted once
     train_f, train_p = inception_outputs(feature_model, prob_model, (x for x, _ in train_loader), device)
     test_f, test_p = inception_outputs(feature_model, prob_model, (x for x, _ in test_loader), device)
-    fake_f, fake_p = inception_outputs(feature_model, prob_model, generate(model, n_fake, args.batch_size, device), device)
+    is_train = inception_score(train_p, args.batch_size, device)
+    is_test = inception_score(test_p, args.batch_size, device)
 
+    # Each seed draws a fresh set of generated images and a fresh train subset, so the spread over
+    # seeds shows how much of a FID/IS difference is just sampling noise.
     # FID is biased upward for small N, so compare everything at matched sizes:
     # the full-size score, and a size-n_test score next to the real test-vs-train baseline.
-    g = torch.Generator().manual_seed(args.seed)
-    train_sub = train_f[torch.randperm(n_train, generator=g)[:n_test]]
     n_big = min(n_fake, n_train)
-    results = {
-        "ckpt": args.ckpt,
-        "epoch": ckpt["epoch"],
-        "fid": {
-            f"vae_vs_train_n{n_big}": fid(fake_f[:n_big], train_f[:n_big], args.batch_size, device),
-            f"vae_vs_train_n{n_test}": fid(fake_f[:n_test], train_sub, args.batch_size, device),
-            f"test_vs_train_n{n_test} (real baseline)": fid(test_f, train_sub, args.batch_size, device),
-        },
-        "is": {
-            f"vae_n{n_fake}": inception_score(fake_p, args.batch_size, device),
-            f"train_n{n_train} (real)": inception_score(train_p, args.batch_size, device),
-            f"test_n{n_test} (real)": inception_score(test_p, args.batch_size, device),
-        },
-    }
+    per_seed = []
+    for seed in args.seeds:
+        torch.manual_seed(seed)
+        fake_f, fake_p = inception_outputs(feature_model, prob_model, generate(model, n_fake, args.batch_size, device), device)
+        g = torch.Generator().manual_seed(seed)
+        train_sub = train_f[torch.randperm(n_train, generator=g)[:n_test]]
+        scores = {
+            "seed": seed,
+            "fid": {
+                f"vae_vs_train_n{n_big}": fid(fake_f[:n_big], train_f[:n_big], args.batch_size, device),
+                f"vae_vs_train_n{n_test}": fid(fake_f[:n_test], train_sub, args.batch_size, device),
+                f"test_vs_train_n{n_test} (real baseline)": fid(test_f, train_sub, args.batch_size, device),
+            },
+            "is": {
+                f"vae_n{n_fake}": inception_score(fake_p, args.batch_size, device),
+                f"train_n{n_train} (real)": is_train,
+                f"test_n{n_test} (real)": is_test,
+            },
+        }
+        per_seed.append(scores)
+        print(f"seed {seed}: " + ", ".join(f"FID {k} {v:.2f}" for k, v in scores["fid"].items())
+              + f", IS vae {scores['is'][f'vae_n{n_fake}']:.3f}", flush=True)
 
-    print(f"{args.ckpt} (epoch {ckpt['epoch']})")
-    for name, table in [("FID (lower is better)", results["fid"]), ("Inception Score", results["is"])]:
+    # "fid" and "is" hold the means (same keys as before), "fid_std" and "is_std" the std over seeds
+    results = {"ckpt": args.ckpt, "epoch": ckpt["epoch"], "seeds": args.seeds}
+    for metric in ("fid", "is"):
+        stats = {k: mean_std([s[metric][k] for s in per_seed]) for k in per_seed[0][metric]}
+        results[metric] = {k: m for k, (m, _) in stats.items()}
+        results[f"{metric}_std"] = {k: s for k, (_, s) in stats.items()}
+    results["per_seed"] = per_seed
+
+    print(f"{args.ckpt} (epoch {ckpt['epoch']}), mean ± std over {len(args.seeds)} seeds")
+    for name, metric in [("FID (lower is better)", "fid"), ("Inception Score", "is")]:
         print(name)
-        for k, v in table.items():
-            print(f"  {k:<40} {v:8.3f}")
+        for k, v in results[metric].items():
+            print(f"  {k:<40} {v:8.3f} ± {results[f'{metric}_std'][k]:.3f}")
 
     out_dir = os.path.dirname(args.ckpt)
     stem = os.path.splitext(os.path.basename(args.ckpt))[0]
     with open(os.path.join(out_dir, f"fid_is_{stem}.json"), "w") as f:
         json.dump(results, f, indent=2)
+    torch.manual_seed(args.seeds[0])
     save_image(next(generate(model, 64, 64, device)), os.path.join(out_dir, f"generated_{stem}.png"), nrow=8)
     print(f"wrote fid_is_{stem}.json and generated_{stem}.png to {out_dir}")
 
