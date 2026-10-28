@@ -8,7 +8,10 @@ from torchvision import datasets, transforms
 def get_transform(img_size):
     return transforms.Compose([
         transforms.Grayscale(num_output_channels=1),  # a few X-rays are stored as RGB
-        transforms.Resize((img_size, img_size)),
+        # Shorter side to img_size, then crop the center square, so the aspect ratio is kept
+        # instead of squashing non-square X-rays (check_aspect.py shows how much this crops)
+        transforms.Resize(img_size),
+        transforms.CenterCrop(img_size),
         transforms.ToTensor(),  # pixel values in [0, 1]
     ])
 
