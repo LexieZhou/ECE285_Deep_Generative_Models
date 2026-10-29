@@ -52,7 +52,6 @@ Run every command from this folder (`HW1_VAE/`).
 | `python run_all.py` | Trains the model, then runs FID/IS on the best checkpoint. It takes the same arguments as `train.py`. |
 | `python train.py --out_dir outputs/run3` | Trains only. Writes `config.json`, `history.csv`, `loss_curve.png`, `train.log`, sample grids every 10 epochs, `model.pt`, `best.pt` and `test_metrics.json`. |
 | `python fid_is.py --ckpt outputs/run2/best.pt` | Computes FID and IS over 5 sampling seeds. Writes `fid_is_best.json` and `generated_best.png` next to the checkpoint. |
-| `python fid_is.py --priors normal gmm --temperatures 1.0 0.9 0.8 0.7` | Also scores samplers that need no retraining: a lower sampling temperature, and a Gaussian mixture fitted to the encoded training images in place of N(0, I) (`--gmm_components`, `--gmm_cov`). Each extra sampler adds `_<prior>_t<temperature>` to its keys in the JSON and writes its own `generated_best_<prior>_t<temperature>.png`. |
 | `python check_aspect.py` | Prints aspect-ratio statistics for the dataset and saves the crop comparison image. |
 
 Run `python train.py --help` to see every hyperparameter.

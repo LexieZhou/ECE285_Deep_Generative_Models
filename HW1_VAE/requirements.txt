@@ -2,7 +2,6 @@ torch>=2.0
 torchvision>=0.15
 pytorch-ignite>=0.4.11
 scipy
-scikit-learn
 matplotlib
 tqdm
 kaggle
