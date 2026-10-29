@@ -132,7 +132,8 @@ def main():
     device = get_device()
     ckpt = torch.load(args.ckpt, map_location=device)
     targs = ckpt["args"]
-    model = VAE(targs["img_size"], 1, targs["latent_dim"], targs["base_channels"]).to(device)
+    model = VAE(targs["img_size"], 1, targs["latent_dim"], targs["base_channels"],
+                targs.get("likelihood", "bernoulli")).to(device)
     model.load_state_dict(ckpt["model"])
     model.eval()
 

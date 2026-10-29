@@ -12,11 +12,13 @@ class VAE(nn.Module):
     so img_size must be a power of 2 (e.g. 64, 128).
     """
 
-    def __init__(self, img_size=128, in_channels=1, latent_dim=128, base_channels=32):
+    def __init__(self, img_size=128, in_channels=1, latent_dim=128, base_channels=32, likelihood="bernoulli"):
         super().__init__()
         n_layers = int(math.log2(img_size)) - 2
         assert 2 ** (n_layers + 2) == img_size, "img_size must be a power of 2"
         self.latent_dim = latent_dim
+        assert likelihood in ("bernoulli", "gaussian")
+        self.likelihood = likelihood
 
         # ----- Encoder: (B, 1, H, W) -> (B, C, 4, 4) -----
         channels = [min(base_channels * 2 ** i, 512) for i in range(n_layers)]
@@ -67,14 +69,28 @@ class VAE(nn.Module):
         return torch.sigmoid(self.decode(z))
 
 
-def vae_loss(recon_logits, x, mu, logvar, beta=1.0):
+def gaussian_sigma(recon_logits, x):
+    """sigma-VAE's "optimal sigma" (Rybkin et al. 2021): one noise scale shared by all pixels, set to its
+    maximum-likelihood value sqrt(MSE) on the batch. It sets the weight of the reconstruction term against
+    the KL term, and unlike a learned parameter it tracks the reconstruction error without lagging behind it.
+    Floored at e^-6 ~ 0.0025, as in the sigma-VAE code, so the likelihood can't become degenerate."""
+    return (x - torch.sigmoid(recon_logits)).pow(2).mean().sqrt().clamp(min=math.exp(-6.0))
+
+
+def vae_loss(recon_logits, x, mu, logvar, beta=1.0, likelihood="bernoulli"):
     """Negative ELBO, averaged over the batch.
 
-    recon: binary cross-entropy summed over pixels
+    recon: binary cross-entropy summed over pixels, or for the gaussian likelihood the negative log-likelihood
+           of x under N(sigmoid(logits), sigma^2) summed over pixels (a density, so it can go below 0)
     kl:    KL(q(z|x) || N(0, I)) in closed form
     """
     batch_size = x.size(0)
-    recon = F.binary_cross_entropy_with_logits(recon_logits, x, reduction="sum") / batch_size
+    if likelihood == "bernoulli":
+        recon = F.binary_cross_entropy_with_logits(recon_logits, x, reduction="sum") / batch_size
+    else:
+        sigma = gaussian_sigma(recon_logits, x)
+        z = (x - torch.sigmoid(recon_logits)) / sigma
+        recon = (0.5 * z.pow(2) + sigma.log() + 0.5 * math.log(2 * math.pi)).sum() / batch_size
     kl = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / batch_size
     return recon + beta * kl, recon, kl
 
