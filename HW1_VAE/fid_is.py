@@ -91,8 +91,11 @@ def main():
     model.load_state_dict(ckpt["model"])
     model.eval()
 
-    # Real images go through the same 128x128 pipeline as training, so real and fake differ only in content
-    load = lambda split: get_dataloader(args.data_root, split, targs["img_size"], args.batch_size, False, args.num_workers)
+    # Real images go through the same 128x128 pipeline as training, so real and fake differ only in content.
+    # Checkpoints from before --resize existed were trained on center crops
+    resize = targs.get("resize", "crop")
+    load = lambda split: get_dataloader(args.data_root, split, targs["img_size"], args.batch_size, False,
+                                        args.num_workers, resize)
     train_loader, test_loader = load("train"), load("test")
     n_train, n_test = len(train_loader.dataset), len(test_loader.dataset)
     n_fake = args.n_fake or n_train

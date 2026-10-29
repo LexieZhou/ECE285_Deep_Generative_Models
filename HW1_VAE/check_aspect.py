@@ -4,17 +4,16 @@ import os
 
 import torch
 from PIL import Image
-from torchvision import transforms
 from torchvision.utils import save_image
 
-from dataset import get_transform
+from dataset import RESIZE_MODES, get_transform
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Aspect ratios of the X-rays and how much the center crop removes.")
+    p = argparse.ArgumentParser(description="Aspect ratios of the X-rays, and squash vs. center crop vs. pad on the most extreme ones.")
     p.add_argument("--data_root", default="data/chest_xray")
     p.add_argument("--img_size", type=int, default=128)
-    p.add_argument("--n_show", type=int, default=8, help="most extreme images to show, squashed vs cropped")
+    p.add_argument("--n_show", type=int, default=8, help="most extreme images to show")
     p.add_argument("--out", default="outputs/aspect_check.png")
     return p.parse_args()
 
@@ -41,17 +40,13 @@ def main():
     for t in (0.1, 0.2, 0.3):
         print(f"  more than {t:.0%} cropped: {(cropped > t).sum().item()} images ({(cropped > t).double().mean():.1%})")
 
-    # Top row: old squashed resize. Bottom row: new resize + center crop.
-    squash = transforms.Compose([transforms.Grayscale(1), transforms.Resize((args.img_size, args.img_size)),
-                                 transforms.ToTensor()])
-    crop = get_transform(args.img_size)
+    # One row per resize mode, in RESIZE_MODES order
     extreme = cropped.argsort(descending=True)[:args.n_show].tolist()
     imgs = [Image.open(paths[i]) for i in extreme]
-    grid = torch.stack([squash(im) for im in imgs] + [crop(im) for im in imgs])
+    grid = torch.stack([get_transform(args.img_size, mode)(im) for mode in RESIZE_MODES for im in imgs])
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     save_image(grid, args.out, nrow=len(imgs))
-    print(f"wrote {args.out}: top row squashed (old), bottom row center-cropped (new), "
-          f"{len(imgs)} most cropped images")
+    print(f"wrote {args.out}: rows are {', '.join(RESIZE_MODES)}, {len(imgs)} most cropped images")
 
 
 if __name__ == "__main__":
