@@ -99,10 +99,11 @@ class Tee:
             s.flush()
 
 
-def plot_history(history, path):
+def plot_history(history, path, likelihood="bernoulli"):
     epochs = [h["epoch"] for h in history]
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    for ax, key, title in zip(axes, ["loss", "recon", "kl"], ["Total loss (-ELBO)", "Reconstruction (BCE)", "KL divergence"]):
+    recon_title = "Reconstruction (BCE)" if likelihood == "bernoulli" else "Reconstruction (Gaussian NLL)"
+    for ax, key, title in zip(axes, ["loss", "recon", "kl"], ["Total loss (-ELBO)", recon_title, "KL divergence"]):
         ax.plot(epochs, [h[f"train_{key}"] for h in history], label="train")
         ax.plot(epochs, [h[f"val_{key}"] for h in history], label="val")
         ax.set_title(title)
@@ -166,7 +167,7 @@ def main():
             writer = csv.DictWriter(f, fieldnames=row.keys())
             writer.writeheader()
             writer.writerows(history)
-        plot_history(history, os.path.join(args.out_dir, "loss_curve.png"))
+        plot_history(history, os.path.join(args.out_dir, "loss_curve.png"), args.likelihood)
         ckpt = {"model": model.state_dict(), "args": vars(args), "epoch": epoch, "val_loss": val_stats["loss"]}
         torch.save(ckpt, os.path.join(args.out_dir, "model.pt"))
         if val_stats["loss"] < best_val:

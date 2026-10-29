@@ -2,6 +2,8 @@
 
 All arguments are passed through to train.py, e.g.
     python run_all.py --out_dir outputs/run3 --epochs 50
+    python run_all.py --out_dir outputs/run4 --likelihood gaussian --kl_warmup 10 --resize pad
+fid_is.py reads the likelihood and resize mode back from the checkpoint, so they need no extra flags.
 """
 import subprocess
 import sys

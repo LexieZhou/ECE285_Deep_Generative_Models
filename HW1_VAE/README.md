@@ -16,6 +16,8 @@ For this homework I implemented a convolutional variational autoencoder (VAE) in
 - **Decoder.** It mirrors the encoder with transposed convolutions and outputs per-pixel logits. A sigmoid turns them into pixel values.
 - **Size.** 8.73M parameters in total.
 - **Stability.** log σ² is clamped to [-10, 10], so exp(log σ²) can't blow up the KL term.
+- **Decoder likelihood.** `--likelihood bernoulli` (the default) uses BCE summed over pixels. `--likelihood gaussian` is the σ-VAE of Rybkin et al. (2021): the reconstruction term is the negative log-likelihood of the image under N(sigmoid(logits), σ²), with one σ shared by all pixels and set to its maximum-likelihood value sqrt(MSE) on each batch (floored at e⁻⁶). This weights reconstruction against KL automatically, rather than through β. The Gaussian NLL is a density, so it and the total loss can go below zero, and it is not comparable to the BCE numbers.
+- **KL warm-up.** `--kl_warmup N` ramps the training KL weight linearly over the first N epochs, from β/N in epoch 1 to β in epoch N. It works with either likelihood. Validation and test losses always use the full β.
 
 ## Data preparation
 
@@ -100,6 +102,7 @@ HW1_VAE/
 ├── outputs/
 │   ├── run1/        diverged first run (lr 1e-3)
 │   ├── run2/        final run: logs, curves, samples, test and FID/IS metrics
+│   ├── run3/        σ-VAE (gaussian likelihood, 10-epoch KL warm-up, center crop): logs, curves, samples
 │   └── aspect_check.png
 └── report/          LaTeX report and figures
 ```
