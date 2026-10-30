@@ -4,13 +4,14 @@ import os
 
 import torch
 from PIL import Image
+from torchvision import transforms
 from torchvision.utils import save_image
 
-from dataset import RESIZE_MODES, get_transform
+from dataset import get_transform
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Aspect ratios of the X-rays, and squash vs. center crop vs. pad on the most extreme ones.")
+    p = argparse.ArgumentParser(description="Aspect ratios of the X-rays, and squash vs. center crop on the most extreme ones.")
     p.add_argument("--data_root", default="data/chest_xray")
     p.add_argument("--img_size", type=int, default=128)
     p.add_argument("--n_show", type=int, default=8, help="most extreme images to show")
@@ -40,13 +41,16 @@ def main():
     for t in (0.1, 0.2, 0.3):
         print(f"  more than {t:.0%} cropped: {(cropped > t).sum().item()} images ({(cropped > t).double().mean():.1%})")
 
-    # One row per resize mode, in RESIZE_MODES order
+    # Top row: squashed resize (used for training). Bottom row: resize + center crop.
+    squash = get_transform(args.img_size)
+    crop = transforms.Compose([transforms.Grayscale(1), transforms.Resize(args.img_size),
+                               transforms.CenterCrop(args.img_size), transforms.ToTensor()])
     extreme = cropped.argsort(descending=True)[:args.n_show].tolist()
     imgs = [Image.open(paths[i]) for i in extreme]
-    grid = torch.stack([get_transform(args.img_size, mode)(im) for mode in RESIZE_MODES for im in imgs])
+    grid = torch.stack([squash(im) for im in imgs] + [crop(im) for im in imgs])
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     save_image(grid, args.out, nrow=len(imgs))
-    print(f"wrote {args.out}: rows are {', '.join(RESIZE_MODES)}, {len(imgs)} most cropped images")
+    print(f"wrote {args.out}: top row squashed (used), bottom row center-cropped, {len(imgs)} most cropped images")
 
 
 if __name__ == "__main__":

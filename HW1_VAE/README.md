@@ -22,7 +22,7 @@ For this homework I implemented a convolutional variational autoencoder (VAE) in
 ## Data preparation
 
 - **Validation split.** The official validation split has only 16 images, so [dataset.py](dataset.py) holds out a class-stratified 10% of the training split instead (4,694 train / 522 validation). The test split is used only for the final evaluation.
-- **Preprocessing.** Images are converted to grayscale. The X-rays are not square (width/height from about 1 to 1.9), so by default the shorter side is padded with black to a square, which is then resized to 128×128. This keeps the whole image without distorting it. `--resize crop` (resize the shorter side, then center crop) and `--resize squash` (resize straight to 128×128) are also available: crop cuts off up to about half of the widest images, and squash distorts the anatomy. [check_aspect.py](check_aspect.py) prints aspect-ratio statistics and saves the three side by side to [outputs/aspect_check.png](outputs/aspect_check.png).
+- **Preprocessing.** Images are converted to grayscale and resized straight to 128×128. The X-rays are not square (width/height from about 1 to 1.9), so this squashes the wider ones horizontally, but nothing is cut off or padded. We also tried the alternatives: a center crop cuts off up to about half of the widest images, and padding with black to a square (run 4) left streaky artifacts along the black bands in the samples. [check_aspect.py](check_aspect.py) prints aspect-ratio statistics and saves a squashed-vs-cropped comparison to [outputs/aspect_check.png](outputs/aspect_check.png).
 
 ## Setup
 
@@ -54,7 +54,7 @@ Run every command from this folder (`HW1_VAE/`).
 | `python run_all.py` | Trains the model, then runs FID/IS on the best checkpoint. It takes the same arguments as `train.py`. |
 | `python train.py --out_dir outputs/run3` | Trains only. Writes `config.json`, `history.csv`, `loss_curve.png`, `train.log`, sample grids every 10 epochs, `model.pt`, `best.pt` and `test_metrics.json`. |
 | `python fid_is.py --ckpt outputs/run2/best.pt` | Computes FID and IS over 5 sampling seeds. Writes `fid_is_best.json` and `generated_best.png` next to the checkpoint. |
-| `python check_aspect.py` | Prints aspect-ratio statistics for the dataset and saves a squash / crop / pad comparison image. |
+| `python check_aspect.py` | Prints aspect-ratio statistics for the dataset and saves the squash-vs-crop comparison image. |
 
 Run `python train.py --help` to see every hyperparameter.
 
@@ -98,11 +98,13 @@ HW1_VAE/
 ├── train.py         training loop, checkpoints, curves, sample grids, test loss
 ├── fid_is.py        FID / Inception Score with real-vs-real baselines
 ├── run_all.py       train.py followed by fid_is.py on best.pt
-├── check_aspect.py  aspect-ratio check: squash vs. center crop vs. pad
+├── check_aspect.py  aspect-ratio check: squash vs. center crop
 ├── outputs/
 │   ├── run1/        diverged first run (lr 1e-3)
 │   ├── run2/        final run: logs, curves, samples, test and FID/IS metrics
 │   ├── run3/        σ-VAE (gaussian likelihood, 10-epoch KL warm-up, center crop): logs, curves, samples
+│   ├── run4/        BCE with images padded to a square: logs, curves, samples
+│   ├── run5/        σ-VAE with images padded to a square: logs, curves, samples
 │   └── aspect_check.png
 └── report/          LaTeX report and figures
 ```

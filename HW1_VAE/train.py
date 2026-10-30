@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision.utils import save_image
 
-from dataset import RESIZE_MODES, get_dataloader, get_train_val_loaders
+from dataset import get_dataloader, get_train_val_loaders
 from model import VAE, gaussian_sigma, get_device, vae_loss
 
 
@@ -19,8 +19,6 @@ def parse_args():
     p.add_argument("--data_root", default="data/chest_xray")
     p.add_argument("--out_dir", default="outputs/run2")
     p.add_argument("--img_size", type=int, default=128)
-    p.add_argument("--resize", choices=RESIZE_MODES, default="pad",
-                   help="how non-square X-rays become square: pad with black, center crop, or squash")
     p.add_argument("--latent_dim", type=int, default=128)
     p.add_argument("--base_channels", type=int, default=32)
     p.add_argument("--batch_size", type=int, default=64)
@@ -127,10 +125,9 @@ def main():
     print(f"device: {device}")
 
     train_loader, val_loader = get_train_val_loaders(
-        args.data_root, args.img_size, args.batch_size, args.num_workers, args.val_frac, args.seed, args.resize)
+        args.data_root, args.img_size, args.batch_size, args.num_workers, args.val_frac, args.seed)
     # Test split is held out: only evaluated once, on the best checkpoint, after training
-    test_loader = get_dataloader(args.data_root, "test", args.img_size, args.batch_size, False, args.num_workers,
-                                 args.resize)
+    test_loader = get_dataloader(args.data_root, "test", args.img_size, args.batch_size, False, args.num_workers)
     print(f"train images: {len(train_loader.dataset)}, val images: {len(val_loader.dataset)}, "
           f"test images: {len(test_loader.dataset)}")
 
