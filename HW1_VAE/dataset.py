@@ -8,10 +8,10 @@ from torchvision import datasets, transforms
 def get_transform(img_size):
     return transforms.Compose([
         transforms.Grayscale(num_output_channels=1),  # a few X-rays are stored as RGB
-        # Shorter side to img_size, then crop the center square, so the aspect ratio is kept
-        # instead of squashing non-square X-rays (check_aspect.py shows how much this crops)
-        transforms.Resize(img_size),
-        transforms.CenterCrop(img_size),
+        # Straight to img_size x img_size: non-square X-rays get squashed, but nothing is cut off or padded.
+        # Center crop cut up to half of the widest images, and black padding left streaky edges in the
+        # samples (check_aspect.py compares squash and crop)
+        transforms.Resize((img_size, img_size)),
         transforms.ToTensor(),  # pixel values in [0, 1]
     ])
 
