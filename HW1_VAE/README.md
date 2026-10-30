@@ -8,7 +8,7 @@ For this homework I implemented a convolutional variational autoencoder (VAE) in
 2. **Data.** The [chest X-ray pneumonia dataset](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia): 5,216 training and 624 test images, NORMAL and PNEUMONIA. The VAE ignores the labels.
 3. **Training.** The model is selected on a validation split, with training curves and sample and reconstruction grids saved along the way.
 4. **Generation.** New images come from decoding z ~ N(0, I).
-5. **Evaluation.** FID and Inception Score are computed with PyTorch-Ignite and reported next to real-vs-real baselines.
+5. **Evaluation.** FID and Inception Score are computed with PyTorch-Ignite exactly as in its [GAN evaluation blog post](https://pytorch-ignite.ai/blog/gan-evaluation-with-fid-and-is/): images are resized to 299×299 with PIL bilinear, left in [0, 1], and both metrics use ignite's default extractor, Inception-v3's 1000-way softmax. They are reported next to real-vs-real baselines.
 
 ## Model
 
@@ -80,7 +80,7 @@ Run `python train.py --help` to see every hyperparameter.
 | FID vs. train, N = 624 ↓ | 261.6 ± 2.0 | 26.7 ± 0.5 (test vs. train) |
 | Inception Score ↑ | 1.77 ± 0.01 | 2.28 (test), 2.27 (train) |
 
-FID and IS are the mean ± std over 5 sampling seeds. The generated images get the overall chest anatomy right but are blurry, as is typical for a VAE with a pixel-wise likelihood. That blur explains most of the gap to the real baseline.
+FID and IS are the mean ± std over 5 sampling seeds. The generated images get the overall chest anatomy right but are blurry, as is typical for a VAE with a pixel-wise likelihood. That blur explains most of the gap to the real baseline. These run 2 scores come from an earlier version of `fid_is.py` (2048-d pool features, ImageNet-normalized input), so they can't be compared with scores from the current script.
 
 <p align="center">
   <img src="outputs/run2/generated_best.png" width="45%" alt="64 generated chest X-rays">

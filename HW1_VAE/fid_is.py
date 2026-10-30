@@ -3,16 +3,14 @@ import json
 import os
 
 import torch
-import torch.nn.functional as F
 from ignite.metrics import FID, InceptionScore
 from ignite.metrics.gan.utils import InceptionModel
+from PIL import Image
+from torchvision import transforms
 from torchvision.utils import save_image
 
 from dataset import get_dataloader
 from model import VAE, get_device
-
-IMAGENET_MEAN = (0.485, 0.456, 0.406)
-IMAGENET_STD = (0.229, 0.224, 0.225)
 
 
 def parse_args():
@@ -27,30 +25,23 @@ def parse_args():
     return p.parse_args()
 
 
-def to_inception_input(x):
-    """(B, 1, H, W) grayscale in [0, 1] -> (B, 3, 299, 299) ImageNet-normalized.
-
-    Inception needs >= 299x299 RGB. The ignite blog resizes with PIL bilinear; since we only upsample
-    (128 -> 299), torch bilinear is equivalent. torchvision's pretrained inception_v3 has
-    transform_input=True, which expects ImageNet-normalized input.
-    """
-    x = x.repeat(1, 3, 1, 1)
-    x = F.interpolate(x, size=(299, 299), mode="bilinear", align_corners=False)
-    mean = torch.tensor(IMAGENET_MEAN, device=x.device).view(1, 3, 1, 1)
-    std = torch.tensor(IMAGENET_STD, device=x.device).view(1, 3, 1, 1)
-    return (x - mean) / std
+def interpolate(batch):
+    """(B, 1, H, W) grayscale in [0, 1] -> (B, 3, 299, 299) in [0, 1], as the ignite blog's interpolate():
+    each image goes through PIL, is resized to 299x299 bilinearly and comes back via ToTensor, with no
+    further normalization. Inception needs RGB, so the gray channel is repeated."""
+    arr = []
+    for img in batch.cpu():
+        pil_img = transforms.ToPILImage()(img)
+        resized_img = pil_img.resize((299, 299), Image.BILINEAR)
+        arr.append(transforms.ToTensor()(resized_img).repeat(3, 1, 1))
+    return torch.stack(arr)
 
 
 @torch.no_grad()
-def inception_outputs(feature_model, prob_model, batches, device):
-    """Runs both of ignite's default Inception extractors over an iterable of image batches:
-    2048-d pool features (FID's default) and the 1000-way softmax (InceptionScore's default)."""
-    feats, probs = [], []
-    for x in batches:
-        x = to_inception_input(x.to(device))
-        feats.append(feature_model(x).cpu())
-        probs.append(prob_model(x).cpu())
-    return torch.cat(feats), torch.cat(probs)
+def inception_outputs(inception, batches, device):
+    """1000-way Inception softmax of every image in an iterable of batches. With no arguments, ignite's FID()
+    and InceptionScore() (as used in the blog) both use exactly this extractor, so one pass serves both."""
+    return torch.cat([inception(interpolate(x).to(device)).cpu() for x in batches])
 
 
 @torch.no_grad()
@@ -61,7 +52,8 @@ def generate(model, n, batch_size, device):
 
 
 def fid(a, b, batch_size, device):
-    """ignite FID between two equal-sized sets of precomputed Inception pool features."""
+    """ignite FID between two equal-sized sets of precomputed Inception outputs. Same value as FID() with
+    its default extractor on the images, which would recompute the outputs on every call."""
     assert len(a) == len(b), "ignite's FID needs the same number of samples on both sides"
     metric = FID(num_features=a.shape[1], feature_extractor=torch.nn.Identity(), device=device)
     for i in range(0, len(a), batch_size):
@@ -101,16 +93,15 @@ def main():
     n_train, n_test = len(train_loader.dataset), len(test_loader.dataset)
     n_fake = args.n_fake or n_train
 
-    # Same extractors as ignite's FID() / InceptionScore() defaults (and the blog):
-    # FID on 2048-d pool features, IS on the 1000-way softmax
-    feature_model = InceptionModel(return_features=True, device=device)
-    prob_model = InceptionModel(return_features=False, device=device)
+    # The extractor behind ignite's default FID() and InceptionScore(), as in the blog:
+    # Inception-v3 with its 1000-way softmax, so FID is computed on 1000-d vectors
+    inception = InceptionModel(return_features=False, device=device)
     print(f"device: {device} | train {n_train}, test {n_test}, generated {n_fake} x {len(args.seeds)} seeds")
-    # Real features don't depend on the seed, so they are extracted once
-    train_f, train_p = inception_outputs(feature_model, prob_model, (x for x, _ in train_loader), device)
-    test_f, test_p = inception_outputs(feature_model, prob_model, (x for x, _ in test_loader), device)
-    is_train = inception_score(train_p, args.batch_size, device)
-    is_test = inception_score(test_p, args.batch_size, device)
+    # Real outputs don't depend on the seed, so they are computed once
+    train_f = inception_outputs(inception, (x for x, _ in train_loader), device)
+    test_f = inception_outputs(inception, (x for x, _ in test_loader), device)
+    is_train = inception_score(train_f, args.batch_size, device)
+    is_test = inception_score(test_f, args.batch_size, device)
 
     # Each seed draws a fresh set of generated images and a fresh train subset, so the spread over
     # seeds shows how much of a FID/IS difference is just sampling noise.
@@ -120,7 +111,7 @@ def main():
     per_seed = []
     for seed in args.seeds:
         torch.manual_seed(seed)
-        fake_f, fake_p = inception_outputs(feature_model, prob_model, generate(model, n_fake, args.batch_size, device), device)
+        fake_f = inception_outputs(inception, generate(model, n_fake, args.batch_size, device), device)
         g = torch.Generator().manual_seed(seed)
         train_sub = train_f[torch.randperm(n_train, generator=g)[:n_test]]
         scores = {
@@ -131,7 +122,7 @@ def main():
                 f"test_vs_train_n{n_test} (real baseline)": fid(test_f, train_sub, args.batch_size, device),
             },
             "is": {
-                f"vae_n{n_fake}": inception_score(fake_p, args.batch_size, device),
+                f"vae_n{n_fake}": inception_score(fake_f, args.batch_size, device),
                 f"train_n{n_train} (real)": is_train,
                 f"test_n{n_test} (real)": is_test,
             },
