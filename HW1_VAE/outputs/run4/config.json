@@ -1,0 +1,19 @@
+{
+  "data_root": "data/chest_xray",
+  "out_dir": "outputs/run4",
+  "img_size": 128,
+  "resize": "pad",
+  "latent_dim": 128,
+  "base_channels": 32,
+  "batch_size": 64,
+  "epochs": 100,
+  "lr": 0.0003,
+  "grad_clip": 100.0,
+  "val_frac": 0.1,
+  "beta": 1.0,
+  "likelihood": "bernoulli",
+  "kl_warmup": 0,
+  "num_workers": 4,
+  "sample_every": 10,
+  "seed": 0
+}

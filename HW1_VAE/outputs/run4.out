@@ -1,0 +1,120 @@
+
+$ /home/ziz158/.conda/envs/vae/bin/python train.py --out_dir outputs/run4
+device: cuda
+train images: 4694, val images: 522, test images: 625
+parameters: 8.73M
+epoch   1 | train loss 8600.1 (recon 8510.3, kl 89.8, max grad 8649.3) | val loss 7408.2
+epoch   2 | train loss 7297.2 (recon 7209.3, kl 87.9, max grad 4399.5) | val loss 7107.7
+epoch   3 | train loss 7119.1 (recon 7031.8, kl 87.4, max grad 4003.8) | val loss 6999.4
+epoch   4 | train loss 7053.3 (recon 6968.6, kl 84.7, max grad 2959.9) | val loss 6938.5
+epoch   5 | train loss 7001.4 (recon 6921.7, kl 79.7, max grad 2124.5) | val loss 6919.6
+epoch   6 | train loss 6982.8 (recon 6905.2, kl 77.6, max grad 2468.2) | val loss 6881.3
+epoch   7 | train loss 6968.2 (recon 6892.1, kl 76.1, max grad 2759.5) | val loss 6862.2
+epoch   8 | train loss 6947.3 (recon 6874.1, kl 73.3, max grad 2178.5) | val loss 6867.0
+epoch   9 | train loss 6939.9 (recon 6868.1, kl 71.8, max grad 2184.4) | val loss 6842.4
+epoch  10 | train loss 6927.5 (recon 6857.3, kl 70.3, max grad 1952.4) | val loss 6839.6
+epoch  11 | train loss 6921.2 (recon 6852.3, kl 68.9, max grad 1905.7) | val loss 6833.2
+epoch  12 | train loss 6913.2 (recon 6845.7, kl 67.5, max grad 2145.4) | val loss 6831.6
+epoch  13 | train loss 6908.4 (recon 6841.8, kl 66.7, max grad 1799.6) | val loss 6822.2
+epoch  14 | train loss 6904.7 (recon 6838.6, kl 66.1, max grad 1526.3) | val loss 6820.2
+epoch  15 | train loss 6895.3 (recon 6831.0, kl 64.3, max grad 1396.6) | val loss 6810.0
+epoch  16 | train loss 6897.3 (recon 6833.4, kl 63.9, max grad 2161.6) | val loss 6832.1
+epoch  17 | train loss 6890.9 (recon 6827.2, kl 63.8, max grad 2322.9) | val loss 6802.3
+epoch  18 | train loss 6885.7 (recon 6822.9, kl 62.8, max grad 1717.4) | val loss 6805.2
+epoch  19 | train loss 6884.5 (recon 6822.5, kl 62.0, max grad 1663.2) | val loss 6802.3
+epoch  20 | train loss 6881.8 (recon 6819.8, kl 62.0, max grad 1818.6) | val loss 6791.0
+epoch  21 | train loss 6879.4 (recon 6818.0, kl 61.4, max grad 2455.2) | val loss 6790.8
+epoch  22 | train loss 6876.3 (recon 6815.1, kl 61.1, max grad 1872.5) | val loss 6798.1
+epoch  23 | train loss 6874.8 (recon 6813.9, kl 60.9, max grad 1960.8) | val loss 6796.2
+epoch  24 | train loss 6868.4 (recon 6808.6, kl 59.9, max grad 1724.2) | val loss 6797.6
+epoch  25 | train loss 6869.0 (recon 6809.0, kl 60.0, max grad 1339.5) | val loss 6784.3
+epoch  26 | train loss 6865.9 (recon 6806.4, kl 59.6, max grad 1959.9) | val loss 6784.9
+epoch  27 | train loss 6868.0 (recon 6808.0, kl 60.0, max grad 1573.0) | val loss 6783.6
+epoch  28 | train loss 6864.7 (recon 6805.3, kl 59.4, max grad 1690.7) | val loss 6777.6
+epoch  29 | train loss 6863.9 (recon 6805.2, kl 58.8, max grad 1303.1) | val loss 6775.7
+epoch  30 | train loss 6861.7 (recon 6802.9, kl 58.9, max grad 1244.8) | val loss 6772.8
+epoch  31 | train loss 6859.0 (recon 6800.2, kl 58.8, max grad 1290.6) | val loss 6778.6
+epoch  32 | train loss 6858.5 (recon 6800.4, kl 58.1, max grad 1172.7) | val loss 6770.4
+epoch  33 | train loss 6855.6 (recon 6797.5, kl 58.1, max grad 1223.1) | val loss 6776.0
+epoch  34 | train loss 6854.5 (recon 6796.9, kl 57.6, max grad 993.6) | val loss 6776.2
+epoch  35 | train loss 6851.1 (recon 6793.2, kl 57.9, max grad 1452.2) | val loss 6772.0
+epoch  36 | train loss 6851.5 (recon 6794.0, kl 57.5, max grad 1184.9) | val loss 6764.5
+epoch  37 | train loss 6850.0 (recon 6792.5, kl 57.5, max grad 1261.4) | val loss 6772.7
+epoch  38 | train loss 6851.5 (recon 6794.3, kl 57.2, max grad 1371.9) | val loss 6763.2
+epoch  39 | train loss 6849.2 (recon 6792.5, kl 56.7, max grad 1215.3) | val loss 6766.4
+epoch  40 | train loss 6847.9 (recon 6791.2, kl 56.7, max grad 1098.3) | val loss 6763.1
+epoch  41 | train loss 6847.5 (recon 6790.9, kl 56.6, max grad 996.6) | val loss 6766.3
+epoch  42 | train loss 6846.7 (recon 6789.8, kl 56.8, max grad 1490.5) | val loss 6762.7
+epoch  43 | train loss 6845.8 (recon 6789.4, kl 56.4, max grad 1275.2) | val loss 6765.3
+epoch  44 | train loss 6847.6 (recon 6791.0, kl 56.6, max grad 1013.7) | val loss 6765.0
+epoch  45 | train loss 6844.1 (recon 6788.0, kl 56.0, max grad 1026.3) | val loss 6761.3
+epoch  46 | train loss 6843.8 (recon 6787.6, kl 56.2, max grad 1213.6) | val loss 6762.8
+epoch  47 | train loss 6843.8 (recon 6787.7, kl 56.1, max grad 1230.1) | val loss 6760.5
+epoch  48 | train loss 6841.4 (recon 6785.3, kl 56.1, max grad 941.1) | val loss 6758.4
+epoch  49 | train loss 6842.0 (recon 6785.9, kl 56.1, max grad 1164.5) | val loss 6755.2
+epoch  50 | train loss 6840.5 (recon 6784.8, kl 55.6, max grad 888.3) | val loss 6755.8
+epoch  51 | train loss 6839.6 (recon 6783.9, kl 55.6, max grad 1184.9) | val loss 6757.3
+epoch  52 | train loss 6836.5 (recon 6781.1, kl 55.4, max grad 929.4) | val loss 6753.7
+epoch  53 | train loss 6834.9 (recon 6779.7, kl 55.2, max grad 897.7) | val loss 6756.6
+epoch  54 | train loss 6834.9 (recon 6779.7, kl 55.1, max grad 983.3) | val loss 6760.1
+epoch  55 | train loss 6833.8 (recon 6778.7, kl 55.2, max grad 1069.6) | val loss 6761.1
+epoch  56 | train loss 6833.3 (recon 6778.2, kl 55.0, max grad 897.8) | val loss 6755.7
+epoch  57 | train loss 6831.2 (recon 6776.1, kl 55.1, max grad 1148.8) | val loss 6753.1
+epoch  58 | train loss 6830.8 (recon 6775.9, kl 54.9, max grad 926.2) | val loss 6760.7
+epoch  59 | train loss 6831.2 (recon 6776.0, kl 55.2, max grad 1550.1) | val loss 6752.6
+epoch  60 | train loss 6832.0 (recon 6777.4, kl 54.7, max grad 1380.6) | val loss 6749.7
+epoch  61 | train loss 6833.4 (recon 6778.7, kl 54.8, max grad 886.2) | val loss 6751.0
+epoch  62 | train loss 6831.0 (recon 6776.3, kl 54.7, max grad 917.5) | val loss 6759.2
+epoch  63 | train loss 6830.1 (recon 6775.7, kl 54.3, max grad 785.3) | val loss 6749.2
+epoch  64 | train loss 6831.9 (recon 6777.2, kl 54.7, max grad 1072.1) | val loss 6750.7
+epoch  65 | train loss 6829.7 (recon 6775.1, kl 54.5, max grad 846.3) | val loss 6748.3
+epoch  66 | train loss 6828.3 (recon 6774.0, kl 54.3, max grad 888.4) | val loss 6747.5
+epoch  67 | train loss 6829.1 (recon 6774.9, kl 54.1, max grad 920.1) | val loss 6747.3
+epoch  68 | train loss 6825.0 (recon 6770.8, kl 54.2, max grad 916.7) | val loss 6748.2
+epoch  69 | train loss 6824.6 (recon 6770.4, kl 54.3, max grad 904.0) | val loss 6747.6
+epoch  70 | train loss 6822.7 (recon 6768.3, kl 54.4, max grad 899.2) | val loss 6746.9
+epoch  71 | train loss 6824.9 (recon 6770.6, kl 54.3, max grad 692.8) | val loss 6745.5
+epoch  72 | train loss 6823.1 (recon 6769.2, kl 53.9, max grad 904.6) | val loss 6744.5
+epoch  73 | train loss 6820.6 (recon 6766.5, kl 54.1, max grad 663.2) | val loss 6744.8
+epoch  74 | train loss 6823.8 (recon 6769.9, kl 53.9, max grad 808.7) | val loss 6745.3
+epoch  75 | train loss 6823.9 (recon 6769.8, kl 54.1, max grad 847.6) | val loss 6744.1
+epoch  76 | train loss 6823.5 (recon 6769.4, kl 54.1, max grad 936.3) | val loss 6744.7
+epoch  77 | train loss 6822.3 (recon 6768.3, kl 54.0, max grad 935.2) | val loss 6745.6
+epoch  78 | train loss 6822.3 (recon 6768.4, kl 53.9, max grad 877.5) | val loss 6743.8
+epoch  79 | train loss 6822.2 (recon 6768.4, kl 53.8, max grad 811.7) | val loss 6744.7
+epoch  80 | train loss 6820.0 (recon 6766.4, kl 53.7, max grad 739.0) | val loss 6743.5
+epoch  81 | train loss 6822.0 (recon 6768.0, kl 54.0, max grad 739.3) | val loss 6743.6
+epoch  82 | train loss 6822.1 (recon 6768.2, kl 53.9, max grad 938.1) | val loss 6744.2
+epoch  83 | train loss 6821.5 (recon 6767.8, kl 53.8, max grad 907.5) | val loss 6743.5
+epoch  84 | train loss 6819.4 (recon 6765.7, kl 53.7, max grad 641.4) | val loss 6743.0
+epoch  85 | train loss 6819.1 (recon 6765.7, kl 53.5, max grad 740.7) | val loss 6743.1
+epoch  86 | train loss 6818.4 (recon 6764.9, kl 53.6, max grad 694.8) | val loss 6742.5
+epoch  87 | train loss 6818.6 (recon 6765.0, kl 53.6, max grad 823.1) | val loss 6740.9
+epoch  88 | train loss 6817.2 (recon 6763.7, kl 53.6, max grad 806.0) | val loss 6741.9
+epoch  89 | train loss 6818.9 (recon 6765.2, kl 53.6, max grad 690.7) | val loss 6741.9
+epoch  90 | train loss 6820.6 (recon 6767.0, kl 53.6, max grad 1086.5) | val loss 6741.7
+epoch  91 | train loss 6820.5 (recon 6766.8, kl 53.6, max grad 807.6) | val loss 6742.3
+epoch  92 | train loss 6817.3 (recon 6763.6, kl 53.7, max grad 585.6) | val loss 6742.1
+epoch  93 | train loss 6818.0 (recon 6764.6, kl 53.4, max grad 889.2) | val loss 6741.7
+epoch  94 | train loss 6817.7 (recon 6764.3, kl 53.4, max grad 809.7) | val loss 6741.6
+epoch  95 | train loss 6819.1 (recon 6765.6, kl 53.5, max grad 698.0) | val loss 6741.5
+epoch  96 | train loss 6818.5 (recon 6764.9, kl 53.6, max grad 807.5) | val loss 6742.9
+epoch  97 | train loss 6817.2 (recon 6763.5, kl 53.7, max grad 842.2) | val loss 6741.4
+epoch  98 | train loss 6815.9 (recon 6762.4, kl 53.5, max grad 645.4) | val loss 6741.7
+epoch  99 | train loss 6818.0 (recon 6764.4, kl 53.5, max grad 664.6) | val loss 6741.9
+epoch 100 | train loss 6819.9 (recon 6766.4, kl 53.6, max grad 746.1) | val loss 6741.7
+best epoch 87 (val loss 6740.9) | test loss 6670.2 (recon 6617.7, kl 52.5)
+
+$ /home/ziz158/.conda/envs/vae/bin/python fid_is.py --ckpt outputs/run4/best.pt --data_root data/chest_xray --batch_size 64 --num_workers 4
+device: cuda | train 5216, test 625, generated 5216 x 5 seeds
+seed 0: FID vae_vs_train_n5216 285.48, FID vae_vs_train_n625 296.14, FID test_vs_train_n625 (real baseline) 29.41, IS vae 1.933
+Traceback (most recent call last):
+  File "/home/ziz158/private/Medical_Image_VAE/HW1_VAE/run_all.py", line 29, in <module>
+    main()
+  File "/home/ziz158/private/Medical_Image_VAE/HW1_VAE/run_all.py", line 24, in main
+    run([sys.executable, "fid_is.py", "--ckpt", f"{args.out_dir}/best.pt", "--data_root", args.data_root,
+  File "/home/ziz158/private/Medical_Image_VAE/HW1_VAE/run_all.py", line 16, in run
+    subprocess.run(cmd, check=True)
+  File "/home/ziz158/.conda/envs/vae/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/ziz158/.conda/envs/vae/bin/python', 'fid_is.py', '--ckpt', 'outputs/run4/best.pt', '--data_root', 'data/chest_xray', '--batch_size', '64', '--num_workers', '4']' died with <Signals.SIGTERM: 15>.
