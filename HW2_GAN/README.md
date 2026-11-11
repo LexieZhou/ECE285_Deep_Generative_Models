@@ -36,14 +36,14 @@ cd HW2_GAN
 pip install -r requirements.txt
 ```
 
-The download needs a [Kaggle API token](https://www.kaggle.com/docs/api) in `~/.kaggle/kaggle.json`. The archive is about 30 GB, so check your free disk space first with `df -h .`.
+The download needs a [Kaggle API token](https://www.kaggle.com/docs/api) in `~/.kaggle/kaggle.json`. The archive is about 30 GB, so check your free disk space first with `df -h .`. Don't pass `--unzip`: the zip and the extracted files would need about 60 GB at once, and `prepare_data.py` reads the images straight from the zip.
 
 ```bash
-kaggle datasets download -d steubk/wikiart -p data/wikiart --unzip
-python prepare_data.py --src data/wikiart --size 64        # writes data/wikiart_64.npy and _meta.json
+kaggle datasets download -d steubk/wikiart -p data          # writes data/wikiart.zip
+python prepare_data.py --src data/wikiart.zip --size 64     # writes data/wikiart_64.npy and _meta.json
 ```
 
-`data/` is git-ignored. Once the `.npy` file exists, you can delete `data/wikiart/`.
+`data/` is git-ignored. Once the `.npy` file exists, you can delete `data/wikiart.zip`. If the disk the repo is on is too small, download to a larger one (`-p /path/to/big/disk`) and point `--src` there. If preprocessing runs out of RAM, lower `--workers`.
 
 ## Usage
 

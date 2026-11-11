@@ -3,15 +3,19 @@
 The originals are large JPEGs (often 1000-2000 px), so decoding them on every epoch would make the CPU,
 not the GPU, the bottleneck. After this script, training reads a ~1 GB array (81k x 64 x 64 x 3).
 
-    python prepare_data.py --src data/wikiart --size 64
-    python prepare_data.py --src data/wikiart --size 64 --styles Impressionism   # one style only
+    python prepare_data.py --src data/wikiart.zip --size 64     # read straight from the zip
+    python prepare_data.py --src data/wikiart --size 64         # or from the unzipped folder
+    python prepare_data.py --src data/wikiart.zip --size 64 --styles Impressionism   # one style only
 
-Images are found recursively, so it does not matter whether the unzipped style folders sit directly in
---src or one level deeper. The style of an image is the name of the folder that contains it.
+Reading from the zip means it never has to be extracted, which halves the disk space needed (~30 GB
+instead of ~60 GB). Images are found recursively, so it does not matter whether the style folders sit at
+the top level or one level deeper. The style of an image is the name of the folder that contains it.
 """
 import argparse
+import io
 import json
 import os
+import zipfile
 from collections import Counter
 from multiprocessing import Pool
 
@@ -25,25 +29,49 @@ EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--src", default="data/wikiart", help="unzipped Kaggle dataset")
+    p.add_argument("--src", default="data/wikiart.zip", help="the Kaggle zip, or the folder it was unzipped to")
     p.add_argument("--size", type=int, default=64)
     p.add_argument("--styles", nargs="+", default=None, help="keep only these style folders (default: all)")
     p.add_argument("--out", default=None, help="default: data/wikiart_<size>[_<styles>].npy")
-    p.add_argument("--workers", type=int, default=os.cpu_count())
+    p.add_argument("--workers", type=int, default=default_workers(),
+                   help="processes; each holds one decoded image at a time, so more workers need more RAM")
     return p.parse_args()
 
 
+def default_workers():
+    """CPUs this process may actually use, at most 16. os.cpu_count() reports every core of the machine,
+    which inside a container can be far more than were allocated (and each worker costs RAM)."""
+    n = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count()
+    return max(1, min(16, n or 1))
+
+
+def is_image(name):
+    base = os.path.basename(name)
+    return os.path.splitext(base)[1].lower() in EXTS and not base.startswith("._") and "__MACOSX" not in name
+
+
 def find_images(src, styles=None):
-    """Sorted (path, style) pairs for every image under src."""
-    items = []
-    for dirpath, _, files in os.walk(src):
-        for f in files:
-            if os.path.splitext(f)[1].lower() in EXTS:
-                items.append((os.path.join(dirpath, f), os.path.basename(dirpath)))
+    """Sorted (path, style) pairs for every image under src (a folder, or the members of a zip)."""
+    if src.endswith(".zip"):
+        with zipfile.ZipFile(src) as zf:
+            names = [n for n in zf.namelist() if is_image(n)]
+        items = [(n, os.path.basename(os.path.dirname(n))) for n in names]
+    else:
+        items = [(os.path.join(d, f), os.path.basename(d))
+                 for d, _, files in os.walk(src) for f in files if is_image(f)]
     items.sort()
     if styles:
         items = [(p, s) for p, s in items if s in set(styles)]
     return items
+
+
+_zip = None  # each worker process opens the zip once (a ZipFile can't be shared across processes)
+
+
+def init_worker(src):
+    global _zip
+    if src.endswith(".zip"):
+        _zip = zipfile.ZipFile(src)
 
 
 def load_square(args):
@@ -51,7 +79,7 @@ def load_square(args):
     Returns a (size, size, 3) uint8 array, or None if the file can't be read."""
     path, size = args
     try:
-        with Image.open(path) as img:
+        with Image.open(io.BytesIO(_zip.read(path)) if _zip else path) as img:
             # For JPEGs, decode at 1/2, 1/4 or 1/8 scale straight away (never below `size`): far faster
             img.draft("RGB", (size, size))
             img = img.convert("RGB")
@@ -72,11 +100,11 @@ def main():
     if args.out is None:
         suffix = "_" + "-".join(args.styles) if args.styles else ""
         args.out = f"data/wikiart_{args.size}{suffix}.npy"
-    print(f"{len(items)} images in {len(set(s for _, s in items))} styles -> {args.out}")
+    print(f"{len(items)} images in {len(set(s for _, s in items))} styles, {args.workers} workers -> {args.out}")
 
     arr = np.empty((len(items), args.size, args.size, 3), dtype=np.uint8)
     kept_styles, skipped, k = [], [], 0
-    with Pool(args.workers) as pool:
+    with Pool(args.workers, initializer=init_worker, initargs=(args.src,)) as pool:
         jobs = pool.imap(load_square, [(p, args.size) for p, _ in items], chunksize=64)  # keeps the order
         for (path, style), img in zip(items, tqdm(jobs, total=len(items))):
             if img is None:
