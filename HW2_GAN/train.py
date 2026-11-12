@@ -32,6 +32,9 @@ def parse_args():
     p.add_argument("--epochs", type=int, default=50)
     p.add_argument("--lr_g", type=float, default=2e-4)
     p.add_argument("--lr_d", type=float, default=2e-4)
+    p.add_argument("--d_steps", type=int, default=1,
+                   help="D updates per G update, each on a new real batch (G then steps len(loader)/d_steps times "
+                        "per epoch); 1 = original DCGAN")
     p.add_argument("--beta1", type=float, default=0.5, help="Adam beta1; DCGAN uses 0.5 instead of 0.9")
     p.add_argument("--beta2", type=float, default=0.999)
     p.add_argument("--no_flip", action="store_true", help="disable random horizontal flips")
@@ -156,7 +159,8 @@ def main():
         real_feats = inception_outputs(inception, real_batches(real_set, idx, 100), device)
 
     acc = {k: 0.0 for k in ("loss_d", "loss_g", "d_real", "d_fake")}
-    n_acc = 0
+    n_acc = n_g = 0
+    loss_g = torch.zeros(())  # defined before the first G step (for the finiteness check below)
     for epoch in range(start_epoch, args.epochs + 1):
         t0 = time.time()
         G.train()
@@ -164,7 +168,10 @@ def main():
         for x in loader:
             x = x.to(device, non_blocking=True)
             z = torch.randn(x.size(0), args.nz, device=device)
-            fake = G(z)
+            # Every batch is a D step; only every d_steps-th batch is also a G step
+            do_g = (it + 1) % args.d_steps == 0
+            with torch.set_grad_enabled(do_g):  # D-only batches need no graph through G
+                fake = G(z)
 
             # (1) Discriminator step: real -> high, fake -> low. detach() keeps this step out of G.
             real_logits = D(x)
@@ -176,22 +183,26 @@ def main():
 
             # (2) Generator step: make the just-updated D call the same fakes real.
             # Gradients flow through D into G, but only G's optimizer steps.
-            fake_logits_g = D(fake)
-            loss_g = g_loss(fake_logits_g, args.loss)
-            optG.zero_grad(set_to_none=True)
-            loss_g.backward()
-            optG.step()
+            if do_g:
+                fake_logits_g = D(fake)
+                loss_g = g_loss(fake_logits_g, args.loss)
+                optG.zero_grad(set_to_none=True)
+                loss_g.backward()
+                optG.step()
+                acc["loss_g"] += loss_g.item()
+                n_g += 1
 
             it += 1
             acc["loss_d"] += loss_d.item()
-            acc["loss_g"] += loss_g.item()
             acc["d_real"] += torch.sigmoid(real_logits).mean().item()
             acc["d_fake"] += torch.sigmoid(fake_logits).mean().item()
             n_acc += 1
             if it % args.log_every == 0:
-                history.append({"iter": it, "epoch": epoch, **{k: v / n_acc for k, v in acc.items()}})
+                row = {k: v / n_acc for k, v in acc.items()}
+                row["loss_g"] = acc["loss_g"] / max(1, n_g)
+                history.append({"iter": it, "epoch": epoch, **row})
                 acc = {k: 0.0 for k in acc}
-                n_acc = 0
+                n_acc = n_g = 0
             if not torch.isfinite(loss_d) or not torch.isfinite(loss_g):
                 raise RuntimeError(f"non-finite loss at iteration {it}: D {loss_d.item()}, G {loss_g.item()}")
 
