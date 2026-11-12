@@ -1,20 +1,103 @@
 device: cuda | 81444 images of 64x64 | 636 iterations per epoch
 G: 3.58M parameters, D: 2.76M parameters
-Traceback (most recent call last):
-  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/train.py", line 236, in <module>
-    main()
-  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/train.py", line 156, in main
-    real_feats = inception_outputs(inception, real_batches(real_set, idx, 100), device)
-  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 29, in inception_outputs
-    return torch.cat([inception(interpolate(x).to(device)).cpu() for x in batches])
-  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 29, in <listcomp>
-    return torch.cat([inception(interpolate(x).to(device)).cpu() for x in batches])
-  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 22, in interpolate
-    arr.append(transforms.ToTensor()(resized_img))
-  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torchvision/transforms/transforms.py", line 137, in __call__
-    return F.to_tensor(pic)
-  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torchvision/transforms/functional.py", line 174, in to_tensor
-    img = img.permute((2, 0, 1)).contiguous()
-KeyboardInterrupt
+epoch   1 |  18.2s | loss_d 1.514 | loss_g 0.814 | d_real 0.547 | d_fake 0.366
+epoch   2 |  18.0s | loss_d 1.445 | loss_g 1.114 | d_real 0.545 | d_fake 0.369
+epoch   3 |  18.1s | loss_d 1.373 | loss_g 1.170 | d_real 0.560 | d_fake 0.368
+epoch   4 |  18.5s | loss_d 1.329 | loss_g 1.226 | d_real 0.573 | d_fake 0.370
+epoch   5 |  19.2s | loss_d 1.247 | loss_g 1.243 | d_real 0.591 | d_fake 0.365 | quick FID 0.1177, IS 1.754 (best)
+epoch   6 |  18.1s | loss_d 1.132 | loss_g 1.279 | d_real 0.616 | d_fake 0.360
+epoch   7 |  19.2s | loss_d 1.162 | loss_g 1.217 | d_real 0.611 | d_fake 0.367
+epoch   8 |  20.3s | loss_d 1.012 | loss_g 1.283 | d_real 0.639 | d_fake 0.349
+epoch   9 |  18.2s | loss_d 0.999 | loss_g 1.322 | d_real 0.633 | d_fake 0.342
+epoch  10 |  18.8s | loss_d 1.093 | loss_g 1.233 | d_real 0.609 | d_fake 0.348 | quick FID 0.1846, IS 2.205
+epoch  11 |  18.6s | loss_d 1.089 | loss_g 1.207 | d_real 0.615 | d_fake 0.348
+epoch  12 |  18.4s | loss_d 1.145 | loss_g 1.140 | d_real 0.595 | d_fake 0.351
+epoch  13 |  18.2s | loss_d 1.171 | loss_g 1.101 | d_real 0.591 | d_fake 0.349
+epoch  14 |  17.9s | loss_d 1.138 | loss_g 1.078 | d_real 0.596 | d_fake 0.349
+epoch  15 |  17.9s | loss_d 1.267 | loss_g 0.999 | d_real 0.573 | d_fake 0.362 | quick FID 0.1190, IS 2.130
+epoch  16 |  17.7s | loss_d 1.292 | loss_g 0.959 | d_real 0.564 | d_fake 0.365
+epoch  17 |  18.4s | loss_d 1.304 | loss_g 0.942 | d_real 0.560 | d_fake 0.366
+epoch  18 |  18.2s | loss_d 1.353 | loss_g 0.909 | d_real 0.546 | d_fake 0.368
+epoch  19 |  18.9s | loss_d 1.379 | loss_g 0.860 | d_real 0.545 | d_fake 0.374
+epoch  20 |  19.0s | loss_d 1.353 | loss_g 0.916 | d_real 0.553 | d_fake 0.374 | quick FID 0.1085, IS 2.014 (best)
+epoch  21 |  17.8s | loss_d 1.363 | loss_g 0.877 | d_real 0.547 | d_fake 0.373
+epoch  22 |  17.8s | loss_d 1.329 | loss_g 0.893 | d_real 0.553 | d_fake 0.369
+epoch  23 |  18.0s | loss_d 1.352 | loss_g 0.859 | d_real 0.547 | d_fake 0.369
+epoch  24 |  17.7s | loss_d 1.391 | loss_g 0.856 | d_real 0.538 | d_fake 0.372
+epoch  25 |  18.1s | loss_d 1.435 | loss_g 0.821 | d_real 0.533 | d_fake 0.379 | quick FID 0.1122, IS 2.285
+epoch  26 |  18.2s | loss_d 1.444 | loss_g 0.788 | d_real 0.530 | d_fake 0.380
+epoch  27 |  19.1s | loss_d 1.462 | loss_g 0.794 | d_real 0.527 | d_fake 0.382
+epoch  28 |  18.4s | loss_d 1.506 | loss_g 0.755 | d_real 0.515 | d_fake 0.382
+epoch  29 |  18.9s | loss_d 1.509 | loss_g 0.774 | d_real 0.513 | d_fake 0.381
+epoch  30 |  17.8s | loss_d 1.523 | loss_g 0.738 | d_real 0.511 | d_fake 0.383 | quick FID 0.0944, IS 2.116 (best)
+epoch  31 |  18.9s | loss_d 1.494 | loss_g 0.771 | d_real 0.516 | d_fake 0.381
+epoch  32 |  19.4s | loss_d 1.527 | loss_g 0.753 | d_real 0.508 | d_fake 0.382
+epoch  33 |  19.7s | loss_d 1.551 | loss_g 0.736 | d_real 0.501 | d_fake 0.382
+epoch  34 |  18.3s | loss_d 1.561 | loss_g 0.737 | d_real 0.496 | d_fake 0.380
+epoch  35 |  18.3s | loss_d 1.572 | loss_g 0.727 | d_real 0.496 | d_fake 0.382 | quick FID 0.0750, IS 2.262 (best)
+epoch  36 |  17.9s | loss_d 1.580 | loss_g 0.713 | d_real 0.493 | d_fake 0.382
+epoch  37 |  18.7s | loss_d 1.613 | loss_g 0.686 | d_real 0.487 | d_fake 0.386
+epoch  38 |  18.3s | loss_d 1.623 | loss_g 0.696 | d_real 0.484 | d_fake 0.384
+epoch  39 |  18.1s | loss_d 1.633 | loss_g 0.699 | d_real 0.482 | d_fake 0.385
+epoch  40 |  17.8s | loss_d 1.635 | loss_g 0.660 | d_real 0.484 | d_fake 0.389 | quick FID 0.0572, IS 2.267 (best)
+epoch  41 |  17.6s | loss_d 1.659 | loss_g 0.659 | d_real 0.480 | d_fake 0.390
+epoch  42 |  17.8s | loss_d 1.660 | loss_g 0.630 | d_real 0.482 | d_fake 0.393
+epoch  43 |  18.2s | loss_d 1.675 | loss_g 0.634 | d_real 0.478 | d_fake 0.393
+epoch  44 |  18.3s | loss_d 1.674 | loss_g 0.635 | d_real 0.476 | d_fake 0.391
+epoch  45 |  19.0s | loss_d 1.692 | loss_g 0.631 | d_real 0.476 | d_fake 0.395 | quick FID 0.0587, IS 2.425
+epoch  46 |  19.5s | loss_d 1.710 | loss_g 0.590 | d_real 0.474 | d_fake 0.398
+epoch  47 |  17.2s | loss_d 1.725 | loss_g 0.598 | d_real 0.472 | d_fake 0.400
+epoch  48 |  17.2s | loss_d 1.725 | loss_g 0.571 | d_real 0.473 | d_fake 0.402
+epoch  49 |  17.8s | loss_d 1.737 | loss_g 0.554 | d_real 0.474 | d_fake 0.406
+epoch  50 |  17.8s | loss_d 1.749 | loss_g 0.552 | d_real 0.472 | d_fake 0.406 | quick FID 0.0586, IS 2.417
+epoch  51 |  17.8s | loss_d 1.757 | loss_g 0.523 | d_real 0.475 | d_fake 0.411
+epoch  52 |  17.7s | loss_d 1.757 | loss_g 0.545 | d_real 0.471 | d_fake 0.407
+epoch  53 |  17.8s | loss_d 1.768 | loss_g 0.513 | d_real 0.475 | d_fake 0.414
+epoch  54 |  17.7s | loss_d 1.765 | loss_g 0.541 | d_real 0.467 | d_fake 0.406
+epoch  55 |  17.7s | loss_d 1.771 | loss_g 0.525 | d_real 0.472 | d_fake 0.412 | quick FID 0.0618, IS 2.376
+epoch  56 |  18.2s | loss_d 1.768 | loss_g 0.530 | d_real 0.471 | d_fake 0.411
+epoch  57 |  18.0s | loss_d 1.761 | loss_g 0.513 | d_real 0.477 | d_fake 0.415
+epoch  58 |  19.1s | loss_d 1.763 | loss_g 0.500 | d_real 0.477 | d_fake 0.416
+epoch  59 |  19.5s | loss_d 1.764 | loss_g 0.507 | d_real 0.475 | d_fake 0.414
+epoch  60 |  18.1s | loss_d 1.763 | loss_g 0.488 | d_real 0.478 | d_fake 0.417 | quick FID 0.0443, IS 2.425 (best)
+epoch  61 |  18.0s | loss_d 1.776 | loss_g 0.488 | d_real 0.478 | d_fake 0.420
+epoch  62 |  19.2s | loss_d 1.771 | loss_g 0.493 | d_real 0.474 | d_fake 0.415
+epoch  63 |  18.0s | loss_d 1.777 | loss_g 0.471 | d_real 0.477 | d_fake 0.420
+epoch  64 |  17.7s | loss_d 1.774 | loss_g 0.450 | d_real 0.481 | d_fake 0.423
+epoch  65 |  17.7s | loss_d 1.783 | loss_g 0.471 | d_real 0.478 | d_fake 0.422 | quick FID 0.0551, IS 2.556
+epoch  66 |  18.5s | loss_d 1.794 | loss_g 0.455 | d_real 0.479 | d_fake 0.425
+epoch  67 |  19.0s | loss_d 1.796 | loss_g 0.443 | d_real 0.479 | d_fake 0.426
+epoch  68 |  18.6s | loss_d 1.789 | loss_g 0.441 | d_real 0.480 | d_fake 0.426
+epoch  69 |  18.4s | loss_d 1.797 | loss_g 0.452 | d_real 0.480 | d_fake 0.428
+epoch  70 |  19.1s | loss_d 1.792 | loss_g 0.447 | d_real 0.477 | d_fake 0.423 | quick FID 0.0470, IS 2.454
+epoch  71 |  18.1s | loss_d 1.801 | loss_g 0.439 | d_real 0.479 | d_fake 0.427
+epoch  72 |  18.9s | loss_d 1.792 | loss_g 0.434 | d_real 0.480 | d_fake 0.426
+epoch  73 |  17.8s | loss_d 1.801 | loss_g 0.430 | d_real 0.482 | d_fake 0.431
+epoch  74 |  18.3s | loss_d 1.798 | loss_g 0.416 | d_real 0.480 | d_fake 0.428
+epoch  75 |  19.1s | loss_d 1.807 | loss_g 0.422 | d_real 0.480 | d_fake 0.430 | quick FID 0.0419, IS 2.495 (best)
+epoch  76 |  18.0s | loss_d 1.797 | loss_g 0.440 | d_real 0.477 | d_fake 0.425
+epoch  77 |  18.8s | loss_d 1.796 | loss_g 0.422 | d_real 0.480 | d_fake 0.428
+epoch  78 |  17.8s | loss_d 1.802 | loss_g 0.424 | d_real 0.479 | d_fake 0.428
+epoch  79 |  18.1s | loss_d 1.805 | loss_g 0.425 | d_real 0.479 | d_fake 0.428
+epoch  80 |  17.3s | loss_d 1.805 | loss_g 0.416 | d_real 0.480 | d_fake 0.429 | quick FID 0.0441, IS 2.535
+epoch  81 |  17.9s | loss_d 1.798 | loss_g 0.420 | d_real 0.480 | d_fake 0.429
+epoch  82 |  18.9s | loss_d 1.804 | loss_g 0.409 | d_real 0.478 | d_fake 0.427
+epoch  83 |  18.3s | loss_d 1.812 | loss_g 0.412 | d_real 0.480 | d_fake 0.432
+epoch  84 |  18.3s | loss_d 1.805 | loss_g 0.406 | d_real 0.480 | d_fake 0.430
+epoch  85 |  19.3s | loss_d 1.809 | loss_g 0.409 | d_real 0.479 | d_fake 0.429 | quick FID 0.0449, IS 2.609
+epoch  86 |  17.9s | loss_d 1.802 | loss_g 0.416 | d_real 0.479 | d_fake 0.428
+epoch  87 |  17.4s | loss_d 1.818 | loss_g 0.407 | d_real 0.480 | d_fake 0.433
+epoch  88 |  19.1s | loss_d 1.804 | loss_g 0.412 | d_real 0.479 | d_fake 0.428
+epoch  89 |  18.6s | loss_d 1.822 | loss_g 0.405 | d_real 0.480 | d_fake 0.434
+epoch  90 |  18.1s | loss_d 1.807 | loss_g 0.408 | d_real 0.476 | d_fake 0.426 | quick FID 0.0413, IS 2.625 (best)
+epoch  91 |  18.8s | loss_d 1.809 | loss_g 0.391 | d_real 0.483 | d_fake 0.434
+epoch  92 |  19.5s | loss_d 1.812 | loss_g 0.402 | d_real 0.480 | d_fake 0.431
+epoch  93 |  17.9s | loss_d 1.817 | loss_g 0.390 | d_real 0.480 | d_fake 0.433
+epoch  94 |  18.2s | loss_d 1.817 | loss_g 0.409 | d_real 0.476 | d_fake 0.429
+epoch  95 |  18.6s | loss_d 1.813 | loss_g 0.385 | d_real 0.482 | d_fake 0.434 | quick FID 0.0413, IS 2.665 (best)
+epoch  96 |  17.8s | loss_d 1.828 | loss_g 0.397 | d_real 0.477 | d_fake 0.433
+epoch  97 |  18.8s | loss_d 1.820 | loss_g 0.371 | d_real 0.484 | d_fake 0.437
+epoch  98 |  18.0s | loss_d 1.824 | loss_g 0.385 | d_real 0.481 | d_fake 0.435
+epoch  99 |  18.4s | loss_d 1.817 | loss_g 0.380 | d_real 0.480 | d_fake 0.433
+epoch 100 |  17.9s | loss_d 1.826 | loss_g 0.397 | d_real 0.476 | d_fake 0.431 | quick FID 0.0407, IS 2.653 (best)
+best quick FID 0.0407 -> outputs/run2/best.pt
