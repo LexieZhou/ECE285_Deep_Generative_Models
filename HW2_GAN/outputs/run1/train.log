@@ -1,0 +1,107 @@
+device: cuda | 81444 images of 64x64 | 636 iterations per epoch
+G: 3.58M parameters, D: 2.77M parameters
+epoch   1 |  16.7s | loss_d 0.667 | loss_g 5.557 | d_real 0.789 | d_fake 0.207
+epoch   2 |  16.6s | loss_d 0.556 | loss_g 4.631 | d_real 0.807 | d_fake 0.188
+epoch   3 |  16.6s | loss_d 0.532 | loss_g 4.722 | d_real 0.815 | d_fake 0.181
+epoch   4 |  16.6s | loss_d 0.493 | loss_g 4.531 | d_real 0.828 | d_fake 0.168
+epoch   5 |  16.1s | loss_d 0.473 | loss_g 4.365 | d_real 0.832 | d_fake 0.165 | quick FID 0.1074, IS 1.962 (best)
+epoch   6 |  16.9s | loss_d 0.487 | loss_g 4.356 | d_real 0.829 | d_fake 0.169
+epoch   7 |  17.0s | loss_d 0.436 | loss_g 4.633 | d_real 0.851 | d_fake 0.148
+epoch   8 |  16.8s | loss_d 0.428 | loss_g 4.313 | d_real 0.850 | d_fake 0.148
+epoch   9 |  16.9s | loss_d 0.447 | loss_g 4.378 | d_real 0.846 | d_fake 0.152
+epoch  10 |  16.8s | loss_d 0.418 | loss_g 4.208 | d_real 0.855 | d_fake 0.143 | quick FID 0.0671, IS 2.551 (best)
+epoch  11 |  16.2s | loss_d 0.421 | loss_g 4.218 | d_real 0.854 | d_fake 0.145
+epoch  12 |  16.0s | loss_d 0.481 | loss_g 3.854 | d_real 0.842 | d_fake 0.157
+epoch  13 |  16.3s | loss_d 0.442 | loss_g 3.796 | d_real 0.844 | d_fake 0.154
+epoch  14 |  16.3s | loss_d 0.518 | loss_g 3.645 | d_real 0.828 | d_fake 0.171
+epoch  15 |  16.2s | loss_d 0.523 | loss_g 3.482 | d_real 0.829 | d_fake 0.171 | quick FID 0.0469, IS 2.734 (best)
+epoch  16 |  16.2s | loss_d 0.537 | loss_g 3.489 | d_real 0.822 | d_fake 0.178
+epoch  17 |  16.5s | loss_d 0.515 | loss_g 3.491 | d_real 0.826 | d_fake 0.173
+epoch  18 |  16.7s | loss_d 0.554 | loss_g 3.373 | d_real 0.819 | d_fake 0.181
+epoch  19 |  16.0s | loss_d 0.505 | loss_g 3.411 | d_real 0.827 | d_fake 0.172
+epoch  20 |  42.8s | loss_d 0.519 | loss_g 3.453 | d_real 0.825 | d_fake 0.175 | quick FID 0.0557, IS 2.928
+epoch  21 |  16.2s | loss_d 0.483 | loss_g 3.473 | d_real 0.834 | d_fake 0.166
+epoch  22 |  16.3s | loss_d 0.553 | loss_g 3.462 | d_real 0.829 | d_fake 0.171
+epoch  23 |  16.5s | loss_d 0.491 | loss_g 3.491 | d_real 0.839 | d_fake 0.161
+epoch  24 |  16.4s | loss_d 0.476 | loss_g 3.508 | d_real 0.842 | d_fake 0.157
+epoch  25 |  16.9s | loss_d 0.499 | loss_g 3.689 | d_real 0.838 | d_fake 0.162 | quick FID 0.0530, IS 2.860
+epoch  26 |  16.8s | loss_d 0.473 | loss_g 3.600 | d_real 0.851 | d_fake 0.149
+epoch  27 |  16.9s | loss_d 0.415 | loss_g 3.649 | d_real 0.858 | d_fake 0.142
+epoch  28 |  16.9s | loss_d 0.456 | loss_g 3.694 | d_real 0.856 | d_fake 0.144
+epoch  29 |  16.8s | loss_d 0.471 | loss_g 3.705 | d_real 0.848 | d_fake 0.152
+epoch  30 |  16.7s | loss_d 0.442 | loss_g 3.809 | d_real 0.856 | d_fake 0.144 | quick FID 0.0445, IS 2.939 (best)
+epoch  31 |  16.5s | loss_d 0.464 | loss_g 3.675 | d_real 0.856 | d_fake 0.144
+epoch  32 |  16.5s | loss_d 0.541 | loss_g 3.697 | d_real 0.850 | d_fake 0.150
+epoch  33 |  16.6s | loss_d 0.397 | loss_g 3.738 | d_real 0.862 | d_fake 0.137
+epoch  34 |  16.5s | loss_d 0.522 | loss_g 3.757 | d_real 0.854 | d_fake 0.146
+epoch  35 |  16.5s | loss_d 0.374 | loss_g 3.792 | d_real 0.875 | d_fake 0.124 | quick FID 0.0357, IS 2.897 (best)
+epoch  36 |  16.7s | loss_d 0.354 | loss_g 3.898 | d_real 0.876 | d_fake 0.123
+epoch  37 |  16.3s | loss_d 0.437 | loss_g 3.672 | d_real 0.870 | d_fake 0.130
+epoch  38 |  16.2s | loss_d 0.394 | loss_g 3.884 | d_real 0.872 | d_fake 0.127
+epoch  39 |  16.5s | loss_d 0.400 | loss_g 3.904 | d_real 0.869 | d_fake 0.130
+epoch  40 |  16.6s | loss_d 0.392 | loss_g 3.999 | d_real 0.876 | d_fake 0.124 | quick FID 0.0381, IS 2.915
+epoch  41 |  16.6s | loss_d 0.401 | loss_g 4.012 | d_real 0.879 | d_fake 0.121
+epoch  42 |  15.9s | loss_d 0.341 | loss_g 3.950 | d_real 0.885 | d_fake 0.114
+epoch  43 |  16.3s | loss_d 0.437 | loss_g 4.026 | d_real 0.871 | d_fake 0.129
+epoch  44 |  16.8s | loss_d 0.304 | loss_g 4.051 | d_real 0.894 | d_fake 0.106
+epoch  45 |  16.8s | loss_d 0.355 | loss_g 4.146 | d_real 0.886 | d_fake 0.114 | quick FID 0.0346, IS 2.927 (best)
+epoch  46 |  16.6s | loss_d 0.341 | loss_g 4.168 | d_real 0.891 | d_fake 0.109
+epoch  47 |  16.7s | loss_d 0.411 | loss_g 4.174 | d_real 0.877 | d_fake 0.123
+epoch  48 |  16.6s | loss_d 0.382 | loss_g 4.163 | d_real 0.881 | d_fake 0.118
+epoch  49 |  16.8s | loss_d 0.275 | loss_g 4.240 | d_real 0.905 | d_fake 0.095
+epoch  50 |  16.8s | loss_d 0.298 | loss_g 4.123 | d_real 0.896 | d_fake 0.102 | quick FID 0.0376, IS 3.014
+best quick FID 0.0346 -> outputs/run1/best.pt
+device: cuda | 81444 images of 64x64 | 636 iterations per epoch
+G: 3.58M parameters, D: 2.77M parameters
+resumed from epoch 50
+epoch  51 |  17.3s | loss_d 0.345 | loss_g 4.342 | d_real 0.890 | d_fake 0.110
+epoch  52 |  17.6s | loss_d 0.361 | loss_g 4.276 | d_real 0.896 | d_fake 0.104
+epoch  53 |  17.6s | loss_d 0.340 | loss_g 4.257 | d_real 0.895 | d_fake 0.105
+epoch  54 |  17.5s | loss_d 0.292 | loss_g 4.331 | d_real 0.903 | d_fake 0.097
+epoch  55 |  17.6s | loss_d 0.310 | loss_g 4.439 | d_real 0.899 | d_fake 0.101 | quick FID 0.0294, IS 3.065 (best)
+epoch  56 |  17.6s | loss_d 0.241 | loss_g 4.308 | d_real 0.911 | d_fake 0.088
+epoch  57 |  17.7s | loss_d 0.259 | loss_g 4.271 | d_real 0.908 | d_fake 0.092
+epoch  58 |  17.6s | loss_d 0.322 | loss_g 4.410 | d_real 0.905 | d_fake 0.095
+epoch  59 |  17.7s | loss_d 0.361 | loss_g 4.431 | d_real 0.903 | d_fake 0.097
+epoch  60 |  17.0s | loss_d 0.330 | loss_g 4.305 | d_real 0.901 | d_fake 0.099 | quick FID 0.0303, IS 2.999
+epoch  61 |  17.6s | loss_d 0.246 | loss_g 4.429 | d_real 0.914 | d_fake 0.085
+epoch  62 |  17.6s | loss_d 0.272 | loss_g 4.532 | d_real 0.912 | d_fake 0.088
+epoch  63 |  17.7s | loss_d 0.306 | loss_g 4.476 | d_real 0.908 | d_fake 0.092
+epoch  64 |  17.3s | loss_d 0.287 | loss_g 4.513 | d_real 0.910 | d_fake 0.089
+epoch  65 |  17.8s | loss_d 0.271 | loss_g 4.582 | d_real 0.913 | d_fake 0.087 | quick FID 0.0305, IS 2.932
+epoch  66 |  17.4s | loss_d 0.329 | loss_g 4.620 | d_real 0.908 | d_fake 0.092
+epoch  67 |  17.5s | loss_d 0.276 | loss_g 4.592 | d_real 0.913 | d_fake 0.087
+epoch  68 |  17.3s | loss_d 0.217 | loss_g 4.567 | d_real 0.922 | d_fake 0.076
+epoch  69 |  17.4s | loss_d 0.271 | loss_g 4.484 | d_real 0.916 | d_fake 0.084
+epoch  70 |  16.9s | loss_d 0.286 | loss_g 4.557 | d_real 0.916 | d_fake 0.084 | quick FID 0.0335, IS 3.037
+epoch  71 |  17.3s | loss_d 0.245 | loss_g 4.725 | d_real 0.920 | d_fake 0.079
+epoch  72 |  17.3s | loss_d 0.353 | loss_g 4.759 | d_real 0.912 | d_fake 0.088
+epoch  73 |  17.6s | loss_d 0.241 | loss_g 4.629 | d_real 0.918 | d_fake 0.082
+epoch  74 |  17.6s | loss_d 0.253 | loss_g 4.684 | d_real 0.921 | d_fake 0.079
+epoch  75 |  17.5s | loss_d 0.239 | loss_g 4.818 | d_real 0.923 | d_fake 0.076 | quick FID 0.0301, IS 2.973
+epoch  76 |  17.5s | loss_d 0.277 | loss_g 4.767 | d_real 0.915 | d_fake 0.085
+epoch  77 |  17.5s | loss_d 0.341 | loss_g 4.764 | d_real 0.919 | d_fake 0.082
+epoch  78 |  17.5s | loss_d 0.198 | loss_g 4.844 | d_real 0.934 | d_fake 0.066
+epoch  79 |  17.5s | loss_d 0.281 | loss_g 4.836 | d_real 0.916 | d_fake 0.083
+epoch  80 |  17.4s | loss_d 0.215 | loss_g 4.818 | d_real 0.927 | d_fake 0.072 | quick FID 0.0360, IS 3.036
+epoch  81 |  17.5s | loss_d 0.340 | loss_g 4.790 | d_real 0.918 | d_fake 0.082
+epoch  82 |  17.3s | loss_d 0.245 | loss_g 4.787 | d_real 0.925 | d_fake 0.075
+epoch  83 |  17.6s | loss_d 0.245 | loss_g 4.962 | d_real 0.926 | d_fake 0.074
+epoch  84 |  17.7s | loss_d 0.188 | loss_g 4.917 | d_real 0.934 | d_fake 0.065
+epoch  85 |  17.6s | loss_d 0.176 | loss_g 4.965 | d_real 0.942 | d_fake 0.057 | quick FID 0.0385, IS 3.086
+epoch  86 |  17.6s | loss_d 0.258 | loss_g 4.876 | d_real 0.918 | d_fake 0.083
+epoch  87 |  17.5s | loss_d 0.256 | loss_g 4.943 | d_real 0.932 | d_fake 0.068
+epoch  88 |  17.5s | loss_d 0.224 | loss_g 5.058 | d_real 0.933 | d_fake 0.067
+epoch  89 |  17.6s | loss_d 0.170 | loss_g 4.990 | d_real 0.941 | d_fake 0.059
+epoch  90 |  17.6s | loss_d 0.253 | loss_g 4.976 | d_real 0.929 | d_fake 0.071 | quick FID 0.0380, IS 3.179
+epoch  91 |  17.5s | loss_d 0.288 | loss_g 5.034 | d_real 0.927 | d_fake 0.073
+epoch  92 |  17.3s | loss_d 0.162 | loss_g 4.974 | d_real 0.943 | d_fake 0.057
+epoch  93 |  17.5s | loss_d 0.387 | loss_g 5.018 | d_real 0.918 | d_fake 0.083
+epoch  94 |  17.2s | loss_d 0.194 | loss_g 5.008 | d_real 0.938 | d_fake 0.062
+epoch  95 |  17.4s | loss_d 0.212 | loss_g 5.038 | d_real 0.936 | d_fake 0.064 | quick FID 0.0335, IS 3.045
+epoch  96 |  17.4s | loss_d 0.213 | loss_g 5.037 | d_real 0.934 | d_fake 0.066
+epoch  97 |  17.4s | loss_d 0.292 | loss_g 5.015 | d_real 0.927 | d_fake 0.073
+epoch  98 |  17.6s | loss_d 0.216 | loss_g 5.107 | d_real 0.938 | d_fake 0.061
+epoch  99 |  17.5s | loss_d 0.266 | loss_g 4.908 | d_real 0.928 | d_fake 0.071
+epoch 100 |  16.6s | loss_d 0.228 | loss_g 5.335 | d_real 0.932 | d_fake 0.068 | quick FID 0.0320, IS 3.008
+best quick FID 0.0294 -> outputs/run1/best.pt

@@ -1,0 +1,20 @@
+device: cuda | 81444 images of 64x64 | 636 iterations per epoch
+G: 3.58M parameters, D: 2.76M parameters
+Traceback (most recent call last):
+  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/train.py", line 236, in <module>
+    main()
+  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/train.py", line 156, in main
+    real_feats = inception_outputs(inception, real_batches(real_set, idx, 100), device)
+  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 29, in inception_outputs
+    return torch.cat([inception(interpolate(x).to(device)).cpu() for x in batches])
+  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 29, in <listcomp>
+    return torch.cat([inception(interpolate(x).to(device)).cpu() for x in batches])
+  File "/home/ziz158/private/ECE285_Deep_Generative_Models/HW2_GAN/metrics.py", line 22, in interpolate
+    arr.append(transforms.ToTensor()(resized_img))
+  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torchvision/transforms/transforms.py", line 137, in __call__
+    return F.to_tensor(pic)
+  File "/home/ziz158/.conda/envs/vae/lib/python3.10/site-packages/torchvision/transforms/functional.py", line 174, in to_tensor
+    img = img.permute((2, 0, 1)).contiguous()
+KeyboardInterrupt
